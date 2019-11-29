@@ -1,6 +1,7 @@
 package com.sagas.generic;
 
 import com.google.common.collect.Maps;
+import com.sagas.actors.bus.RabbitEventProvider;
 import org.apache.ofbiz.base.conversion.ConversionException;
 import org.apache.ofbiz.base.util.Debug;
 import org.apache.ofbiz.entity.Delegator;
@@ -25,10 +26,14 @@ public class EntityEventHub implements EntityEcaHandler<EntityEcaRule> {
     private static EntityEventHub instance;
     @Inject
     Provider<KafkaProvider> kafkaProvider;
+    @Inject
+    Provider<RabbitEventProvider> rabbitProvider;
+
     private EntityEcaHandler<EntityEcaRule> defaultHandler;
     private GenericDelegator delegator;
     private boolean trackOn = false;
-    private boolean measureUpdaterOn= false;
+    private boolean measureUpdaterOn= true;
+
     private Map<String, SubscriberInfo> eventSubscriberTypes = Maps.newConcurrentMap();
     private ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> eventSubscribers = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
     @Inject
@@ -81,7 +86,14 @@ public class EntityEventHub implements EntityEcaHandler<EntityEcaRule> {
         Map<String, Object> meta = Maps.newHashMap();
         meta.put("_operation", operation);
         meta.put("_event", event);
+        meta.put("_entity", value.getEntityName());
+        meta.put("_timestamp", System.currentTimeMillis());
+        meta.put("_error", isError);
         return ValueHelper.entityToJson(value, meta);
+    }
+
+    private String createEntityEventTopic(GenericEntity value){
+        return "measure.entities."+value.getEntityName();
     }
 
     @Override
@@ -93,13 +105,16 @@ public class EntityEventHub implements EntityEcaHandler<EntityEcaRule> {
         }
 
         if(measureUpdaterOn){
-            if(!currentOperation.equalsIgnoreCase("find")
-                    && event.equals("run")) {
-                try {
-                    kafkaProvider.get().post("measure." + value.getEntityName(),
-                            createMessage(currentOperation, event, value, isError));
-                } catch (Exception e) {
-                    Debug.logError(e, e.getMessage(), module);
+            if(!currentOperation.equalsIgnoreCase("find")) {
+                if (event.equals("run")||event.equals("return")) {
+                    try {
+                        kafkaProvider.get().post("measure.entities",
+                                createMessage(currentOperation, event, value, isError));
+                        rabbitProvider.get().post(createEntityEventTopic(value),
+                                createMessage(currentOperation, event, value, isError));
+                    } catch (Exception e) {
+                        Debug.logError(e, e.getMessage(), module);
+                    }
                 }
             }
         }

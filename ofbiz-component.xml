@@ -30,6 +30,8 @@ under the License.
 
     <!-- entity resources: model(s), eca(s), group, and data definitions -->
     <entity-resource type="model" reader-name="main" loader="main" location="entitydef/entitymodel.xml"/>
+    <entity-resource type="model" reader-name="main" loader="main" location="entitydef/entitymodel_dss.xml"/>
+
     <!-- <entity-resource type="eca" reader-name="main" loader="main" location="entitydef/eecas.xml"/> -->
     <entity-resource type="data" reader-name="seed" loader="main" location="data/SagasTypeData.xml"/>
     <entity-resource type="data" reader-name="seed" loader="main" location="data/SagasSecurityPermissionSeedData.xml"/>
@@ -59,8 +61,19 @@ under the License.
     <container name="sagas-bridge" loaders="main,rmi" class="com.sagas.generic.SagasBridge">
         <property name="bound-name" value="SagasBridge"/>
         <property name="bound-host" value="0.0.0.0"/>
-        <property name="bound-port" value="25333"/>
+        <property name="bound-port" value="22333"/>
+        <property name="callback-port" value="22334"/>
         <property name="delegator-name" value="default"/>
     </container>
+
+    <!-- actors service -->
+    <!-- this container move into sagas-bridge-module
+    <container name="blueprints" loaders="main,rmi" class="com.sagas.blueprints.HttpServerActorInteraction">
+        <property name="bound-name" value="Blueprints"/>
+        <property name="bound-host" value="0.0.0.0"/>
+        <property name="bound-port" value="8090"/>
+        <property name="delegator-name" value="default"/>
+    </container>
+    -->
 
 </ofbiz-component>

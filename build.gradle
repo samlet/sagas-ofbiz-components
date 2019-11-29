@@ -22,6 +22,19 @@ dependencies {
 
     //pluginLibsCompile 'junit:junit-dep:4.10'
     //pluginLibsRuntime 'junit:junit-dep:4.10'
+    pluginLibsCompile 'com.rabbitmq:amqp-client:5.6.0'
+    pluginLibsCompile 'com.auth0:java-jwt:3.7.0'
+
+    // ** akka **
+    pluginLibsCompile 'com.typesafe.akka:akka-actor_2.12:2.5.21'
+    // https://mvnrepository.com/artifact/com.typesafe.akka/akka-stream
+    // pluginLibsCompile 'com.typesafe.akka:akka-stream_2.12:2.5.12'
+    pluginLibsCompile 'com.typesafe.akka:akka-stream_2.12:2.5.21'
+    // https://mvnrepository.com/artifact/com.typesafe.akka/akka-http
+    pluginLibsCompile 'com.typesafe.akka:akka-http_2.12:10.1.7'
+    // https://mvnrepository.com/artifact/com.typesafe.akka/akka-http-jackson
+    pluginLibsCompile 'com.typesafe.akka:akka-http-jackson_2.12:10.1.7'
+
 }
 
 task install {

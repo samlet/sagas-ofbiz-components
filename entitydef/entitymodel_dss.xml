@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <!-- ========================================================= -->
+    <!-- ======================== Defaults ======================= -->
+    <!-- ========================================================= -->
+    <title>Entity of Sagas Component</title>
+    <description>None</description>
+    <version>0.1</version>
+
+    <entity entity-name="DssLinearSales" package-name="com.sagas.dss" title="Dss Linear Sales">
+        <field name="year" type="numeric"></field>
+        <field name="yearLower" type="numeric"></field>
+        <field name="yearUpper" type="numeric"></field>
+        <field name="sales" type="numeric"></field>
+        <field name="salesLower" type="numeric"></field>
+        <field name="salesUpper" type="numeric"></field>
+        <field name="radius" type="floating-point"></field>
+        <field name="dssLinearSalesId" type="id"></field>
+        <prim-key field="dssLinearSalesId"/>
+    </entity>
+    <entity entity-name="DssOrdinalSales" package-name="com.sagas.dss" title="Dss Ordinal Sales">
+        <field name="year" type="description"></field>
+        <field name="sales" type="numeric"></field>
+        <field name="dssOrdinalSalesId" type="id"></field>
+        <prim-key field="dssOrdinalSalesId"/>
+    </entity>
+</entitymodel>
