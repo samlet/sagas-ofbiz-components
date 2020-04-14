@@ -1,6 +1,7 @@
 package com.sagas.generic;
 
 import com.google.common.collect.Maps;
+import com.sagas.SagasConf;
 import com.sagas.actors.bus.RabbitEventProvider;
 import org.apache.ofbiz.base.conversion.ConversionException;
 import org.apache.ofbiz.base.util.Debug;
@@ -31,8 +32,6 @@ public class EntityEventHub implements EntityEcaHandler<EntityEcaRule> {
 
     private EntityEcaHandler<EntityEcaRule> defaultHandler;
     private GenericDelegator delegator;
-    private boolean trackOn = false;
-    private boolean measureUpdaterOn= true;
 
     private Map<String, SubscriberInfo> eventSubscriberTypes = Maps.newConcurrentMap();
     private ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> eventSubscribers = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
@@ -41,22 +40,6 @@ public class EntityEventHub implements EntityEcaHandler<EntityEcaRule> {
         this.delegator = delegator;
         this.defaultHandler = this.delegator.getEntityEcaHandler();
         this.delegator.setEntityEcaHandler(this);
-    }
-
-    public boolean isMeasureUpdaterOn() {
-        return measureUpdaterOn;
-    }
-
-    public void setMeasureUpdaterOn(boolean measureUpdaterOn) {
-        this.measureUpdaterOn = measureUpdaterOn;
-    }
-
-    public boolean isTrackOn() {
-        return trackOn;
-    }
-
-    public void setTrackOn(boolean trackOn) {
-        this.trackOn = trackOn;
     }
 
     /*
@@ -98,13 +81,13 @@ public class EntityEventHub implements EntityEcaHandler<EntityEcaRule> {
 
     @Override
     public void evalRules(String currentOperation, Map<String, List<EntityEcaRule>> eventMap, String event, GenericEntity value, boolean isError) throws GenericEntityException {
-        if (trackOn) {
+        if (SagasConf.trackOn) {
             Debug.logImportant("event hub for entity " + value.getEntityName()
                     + ", operation " + currentOperation
                     + ", event " + event + ".", module);
         }
 
-        if(measureUpdaterOn){
+        if(SagasConf.measureUpdaterOn){
             if(!currentOperation.equalsIgnoreCase("find")) {
                 if (event.equals("run")||event.equals("return")) {
                     try {
